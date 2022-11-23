@@ -43,6 +43,15 @@ You may join [here](https://dsc.gg/palera1n).
   - On A10, this can be fixed in the future by implementing blackbird.
   - On A11, we don't have a SEP exploit yet.
 
+### Why deleted role option?
+- This is an Error Fixing: `newfs_apfs: unable to format volume inside......`.
+
+   - Fix is role option is deleted(palera1n.sh) and ramdisk to upload device wait sleep time to 1 sec to 5 sec(sshrd.sh) Modifyed.
+
+   - My device was not work to other Role Option.
+
+- Fixing Code(palera1n.sh): `/sbin/newfs_apfs -A -D -o role=r -v System /dev/disk0s1` to `/sbin/newfs_apfs -A -D -v System /dev/disk0s1`
+
 # Prerequisites
 #### Warning: You must install the Tips app from the App Store before running palera1n.
 - A checkm8 vulnerable iOS device on iOS 15 (A8-A11)

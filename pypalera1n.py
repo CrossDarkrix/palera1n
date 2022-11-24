@@ -300,7 +300,7 @@ def SSHRD(arg, arg2='', arg3=''):
         subprocess.run('{} pwn'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
         subprocess.run('{} reset'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
         subprocess.run('{} -f sshramdisk/iBSS.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
-        time.sleep(1.9)
+        time.sleep(2.9)
         subprocess.run('{} -f sshramdisk/iBEC.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
         if Check == '0x8010':
             Dev_Check = '1'
@@ -312,6 +312,7 @@ def SSHRD(arg, arg2='', arg3=''):
             Dev_Check = '1'
         if Check == '0x8012':
             Dev_Check = '1'
+        time.sleep(3.5)
         if Dev_Check == '1':
             subprocess.run('{} -c go'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
             time.sleep(6.9)

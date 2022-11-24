@@ -56,6 +56,7 @@ class SaveLogger:
 # Functions
 def Remote_cmd(cmd):
     subprocess.run('{} -p "alpine" ssh -o StrictHostKeyChecking=no -p2222 root@localhost "{}"'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True)
+    return
 
 def Remote_cmd2(cmd):
     out, err = subprocess.Popen('{} -p "alpine" ssh -o StrictHostKeyChecking=no -p2222 root@localhost "{}"'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
@@ -68,6 +69,7 @@ def Remote_cmd2(cmd):
 
 def Remote_cp(cmd):
     subprocess.run('{} -p "alpine" scp -o StrictHostKeyChecking=no -P2222 {}'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True)
+    return
 
 def Step(num, message):
     for i in reversed(range(0, num)):
@@ -75,17 +77,21 @@ def Step(num, message):
         time.sleep(0.9)
     print('{} (0)\n'.format(message), end='\r', flush=True)
     print(colorama.Fore.RESET)
+    return
 
 def Recovery_Fix_Auto_Boot():
     if Tweaks[0] == '1':
         subprocess.run('{} -c "setenv auto-boot false"'.format(os.path.join(Dir, 'irecovery')), shell=True)
         subprocess.run('{} -c "saveenv"'.format(os.path.join(Dir, 'irecovery')), shell=True)
+        return
     else:
         subprocess.run('{} -c "setenv auto-boot true"'.format(os.path.join(Dir, 'irecovery')), shell=True)
         subprocess.run('{} -c "saveenv"'.format(os.path.join(Dir, 'irecovery')), shell=True)
+        return
     if Semi_tethered[0] == '1':
         subprocess.run('{} -c "setenv auto-boot true"'.format(os.path.join(Dir, 'irecovery')), shell=True)
         subprocess.run('{} -c "saveenv"'.format(os.path.join(Dir, 'irecovery')), shell=True)
+        return
 
 def _Info(argm, sed):
     if argm == 'recovery':
@@ -107,10 +113,12 @@ def _Pwn():
         print('[*] Pwning device')
         subprocess.run('{} pwn'.format(os.path.join(Dir, 'gaster')), shell=True)
         time.sleep(1.9)
+        return
 
 def _Reset():
     print('[*] Resetting DFU state')
     subprocess.run('{} reset'.format(os.path.join(Dir, 'gaster')), shell=True)
+    return
 
 def Get_Device_Mode():
     if OS_Type == 'Darwin':
@@ -168,9 +176,11 @@ def _Wait(cmd):
         time.sleep(1)
     if cmd == 'recovery':
         Recovery_Fix_Auto_Boot()
+        return
 
 def BackSleepStep():
     Step(4, StepOne)
+    return
 
 def _DFUHelper(device):
     global StepOne
@@ -200,9 +210,11 @@ def _DFUHelper(device):
 def _Kill_If_Running(process):
     if not subprocess.Popen('pgrep -u root -xf "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()[0].decode() == '':
         subprocess.run('sudo killall {}'.format(process), shell=True)
+        return
     else:
         if not subprocess.Popen('pgrep -x "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()[0].decode() == '':
             subprocess.run('killall {}'.format(process), shell=True)
+            return
 
 def _Exit_Handler():
     if OS_Type == 'Darwin':
@@ -252,6 +264,7 @@ def KernelDiFF(Original, Patched, arg3):
         for dd2 in Diff:
             data2 = '{} {} {}\n'.format(dd2[0], dd2[1], dd2[2])
             DiffFile.write(data2)
+    return
 
 def SSHRD(arg, arg2='', arg3=''):
     sshrd_work_dir = os.path.join(rootpath, 'ramdisk')

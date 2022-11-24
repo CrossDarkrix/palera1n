@@ -793,11 +793,11 @@ if [[ "$cpid" == *"0x801"* ]]; then
     sleep 1
     "$dir"/irecovery -c fsboot
 else
-    sleep 1
+    sleep 5
     "$dir"/irecovery -f boot-"$deviceid"/iBSS.img4
-    sleep 1
+    sleep 5
     "$dir"/irecovery -f boot-"$deviceid"/ibot.img4
-    sleep 1
+    sleep 5
     "$dir"/irecovery -f boot-"$deviceid"/bootlogo.img4
     sleep 1
     "$dir"/irecovery -c "setpicture 0x1"

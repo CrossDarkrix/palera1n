@@ -261,12 +261,12 @@ def SSHRD(arg, arg2='', arg3=''):
     if OS_Type == 'Windows':
         raise 'Unsupported OS Detected!\nExiting.....'
     if sshrd_gaster_download_check == '1':
-        if not os.path.exists(os.path.join(sshrd_work_dir, OS_Type, 'gaster')):
+        if not os.path.exists(os.path.join(OS_Type, 'gaster')):
             gaster_URL = 'https://nightly.link/palera1n/gaster/workflows/makefile/main/gaster-{}.zip'.format(OS_Type)
             print('[*] Downloading gaster.....')
             gaster_Data = urllib.request.urlopen(urllib.request.Request(gaster_URL, headers={'User-Agent': 'curl/7.85.0'})).read()
             with zipfile.ZipFile(BytesIO(gaster_Data), 'r') as gaster_zip:
-                gaster_zip.extractall(os.path.join(sshrd_work_dir, OS_Type)+'/.')
+                gaster_zip.extractall(OS_Type+'/.')
             print('[*] gaster Download Done!')
     BackPath = os.getcwd()
     os.chdir(os.path.join(sshrd_work_dir, OS_Type))
@@ -291,12 +291,11 @@ def SSHRD(arg, arg2='', arg3=''):
             print("[*] Waiting for device in DFU mode")
         while not re.compile('.+(DFU Mode).+').search(subprocess.Popen('lsusb 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()):
             time.sleep(0.9)
-    if os.path.exists(os.path.join(sshrd_work_dir, 'work')):
-        shutil.rmtree(os.path.join(sshrd_work_dir, 'work'))
-    if not os.path.exists(os.path.join(sshrd_work_dir, 'sshramdisk')):
-        os.makedirs('sshramdisk', exist_ok=True)
+    if os.path.exists('work'):
+        shutil.rmtree('work')
+    os.makedirs('sshramdisk', exist_ok=True)
     if arg == 'boot':
-        if not os.path.exists(os.path.join(sshrd_work_dir, 'sshramdisk', 'iBSS.img4')):
+        if not os.path.exists(os.path.join('sshramdisk', 'iBSS.img4')):
             raise "[-] Please create an SSH ramdisk first!"
         subprocess.run('{} pwn'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
         subprocess.run('{} reset'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
@@ -393,7 +392,7 @@ def SSHRD(arg, arg2='', arg3=''):
         subprocess.run('hdiutil detach -force /tmp/SSHRD', shell=True)
         subprocess.run('hdiutil resize -sectors min work/ramdisk.dmg', shell=True)
     elif OS_Type == 'Linux':
-        if os.path.exists('other/ramdisk.tar.gz'):
+        if os.path.exists(os.path.join('other', 'ramdisk.tar.gz')):
             with tarfile.open('other/ramdisk.tar.gz', 'r:gz') as ramtar:
                 ramtar.extractall(path='other/.')
         subprocess.run('{} work/ramdisk.dmg grow 300000000 > /dev/null'.format(os.path.join(sshrd_work_dir, OS_Type, 'hfsplus')), shell=True)

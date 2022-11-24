@@ -130,10 +130,10 @@ def Get_Device_Mode():
     dev_count = 0
     for apple_device in apples:
         if apple_device == '12ab':
-            Device_Mode[0] = normal
+            Device_Mode[0] = 'normal'
             dev_count += 1
         if apple_device == '12a8':
-            Device_Mode[0] = normal
+            Device_Mode[0] = 'normal'
             dev_count += 1
         if apple_device == '1281':
             Device_Mode[0] = 'recovery'

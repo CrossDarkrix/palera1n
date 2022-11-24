@@ -70,7 +70,7 @@ def Remote_cp(cmd):
     subprocess.run('{} -p "alpine" scp -o StrictHostKeyChecking=no -P2222 {}'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True)
 
 def Step(num, message):
-    for i in reverse(range(0, num)):
+    for i in reversed(range(0, num)):
         print(colorama.Fore.CYAN + '({}) {}'.format(message, i), end='\r', flush=True)
         time.sleep(0.9)
     print('{} (0)\n'.format(message), end='\r', flush=True)

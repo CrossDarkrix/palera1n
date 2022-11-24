@@ -314,10 +314,10 @@ def SSHRD(arg, arg2='', arg3=''):
             Dev_Check = '1'
         if Dev_Check == '1':
             subprocess.run('{} -c go'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
-            time.sleep(4.9)
+            time.sleep(6.9)
         else:
             subprocess.run('{} -f sshramdisk/iBEC.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
-            time.sleep(4.9)
+            time.sleep(6.9)
         subprocess.run('{} -f sshramdisk/bootlogo.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
         time.sleep(0.9)
         subprocess.run('{} -c "setpicture 0x1"'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)

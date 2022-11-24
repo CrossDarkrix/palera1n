@@ -147,11 +147,17 @@ def Get_Device_Mode():
     elif 2 <= dev_count:
         raise '[-] Please attach only one device'
     if OS_Type == 'Linux':
-        if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('.*(\n{1})', subprocess.Popen('cat /sys/bus/usb/devices/*/serial', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split('\n')[0]).group():
-            Device_Mode[0] = 'ramdisk'
+        try:
+            if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('.*(\n{1})', subprocess.Popen('cat /sys/bus/usb/devices/*/serial', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split('\n')[0]).group():
+                Device_Mode[0] = 'ramdisk'
+        except:
+            pass
     elif OS_Type == 'Darwin':
-        if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('(Serial Number).*', subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split(': ')[1]).group():
-            Device_Mode[0] = 'ramdisk'
+        try:
+            if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('(Serial Number).*', subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split(': ')[1]).group():
+                Device_Mode[0] = 'ramdisk'
+        except:
+            pass
     print(Device_Mode[0])
     return Device_Mode[0]
 

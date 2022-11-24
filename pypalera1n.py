@@ -607,8 +607,10 @@ def main(argv):
             print('[*] Rebooting device in SSH Ramdisk')
             if OS_Type == 'Linux':
                 threading.Thread(target=RootStartiProxy, daemon=True).start()
+                pass
             else:
                 threading.Thread(target=StartiProxy, daemon=True).start()
+                pass
             time.sleep(0.9)
             Remote_cmd('/usr/sbin/nvram auto-boot=false')
             Remote_cmd('/sbin/reboot')
@@ -700,8 +702,10 @@ def main(argv):
                                 fix.write(fixed_data)
             if OS_Type == 'Linux':
                 threading.Thread(target=RootStartiProxy, daemon=True).start()
+                pass
             elif OS_Type == 'Darwin':
                 threading.Thread(target=StartiProxy, daemon=True).start()
+                pass
             while Remote_cmd2('echo connected') == '':
                 time.sleep(0.9)
             print("[*] Testing for baseband presence")
@@ -790,6 +794,7 @@ def main(argv):
                 Remote_cmd('/bin/chmod 755 $tipsdir/Tips $tipsdir/PogoHelper')
                 time.sleep(0.9)
                 Remote_cmd('/usr/sbin/chown 0 $tipsdir/PogoHelper')
+                pass
             if Semi_tethered[0] == '1':
                 Remote_cmd('/usr/sbin/nvram auto-boot=true')
             else:
@@ -813,10 +818,13 @@ def main(argv):
             DevFound = '0'
             if re.compile('iPhone8.*').search(Device_iD):
                 DevFound = '1'
+                pass
             if re.compile('iPad6.*').search(Device_iD):
                 DevFound = '1'
+                pass
             if re.compile('.*iPad5.*').search(Device_iD):
                 DevFound = '1'
+                pass
             if DevFound == '1':
                 subprocess.run('{} -m pyimg4 im4p extract -i work/kernelcache -o work/kcache.raw --extra work/kpp.bin'.format(sys.executable), shell=True)
             else:
@@ -854,6 +862,7 @@ def main(argv):
         # Boot Create
         if not os.path.exists('boot-{}/.fsboot'.format(Device_iD)):
             shutil.rmtree('boot-{}'.format(Device_iD))
+            pass
         if not os.path.exists('boot-{}/ibot.img4'.format(Device_iD)):
             shutil.rmtree('boot-{}'.format(Device_iD))
             os.makedirs('boot-{}'.format(Device_iD), exist_ok=True)
@@ -893,6 +902,7 @@ def main(argv):
             subprocess.run('{} -i other/bootlogo.im4p -o boot-{}/bootlogo.img4 -M work/IM4M -A -T rlgo'.format(os.path.join(Dir, 'img4'), Device_iD), shell=True)
             with open('boot-{}/.fsboot'.format(Device_iD), 'w') as fsboots:
                 fsboots.write('')
+            pass
         # Boot Device
         time.sleep(1.9)
         _Pwn()
@@ -918,6 +928,7 @@ def main(argv):
             subprocess.run('defaults write -g ignore-devices -bool false', shell=True)
             subprocess.run('defaults write com.apple.AMPDevicesAgent dontAutomaticallySyncIPods -bool false', shell=True)
             subprocess.run('killall Finder', shell=True)
+            pass
         os.chdir(os.path.join(rootpath, 'logs'))
         for log in sorted(os.listdir()):
             if log.split('.')[1].lower() == 'log':

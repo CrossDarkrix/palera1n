@@ -361,18 +361,14 @@ def SSHRD(arg, arg2='', arg3=''):
     os.makedirs(DircTree3, exist_ok=True)
     shutil.move(File3, DircTree3)
     if OS_Type == 'Darwin':
-        _Plutil = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()
-        subprocess.run('{} -g Firmware/{}.trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', _Plutil).group()).replace('\n',''), Ipsw_URL), shell=True)
+        subprocess.run('''{} -g Firmware/"$(/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist | grep '<string>' |cut -d\> -f2 |cut -d\< -f1 | head -1)".trustcache {}'''.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), Ipsw_URL), shell=True)
     elif OS_Type == 'Linux':
-        _PlistBuddy = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')
-        subprocess.run('{} -g Firmware/{}.trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), _PlistBuddy, Ipsw_URL), shell=True)
+        subprocess.run('''{} -g Firmware/"$({} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path" | sed 's/"//g')".trustcache "{}"'''.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy'), Ipsw_URL), shell=True)
     subprocess.run('{} -g {} "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
     if OS_Type == 'Darwin':
-        _Plutil2 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()
-        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', _Plutil2).group()).replace('\n',''), Ipsw_URL), shell=True)
+        subprocess.run('''{} -g -g "$(/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist | grep '<string>' |cut -d\> -f2 |cut -d\< -f1 | head -1)" "{}"'''.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), Ipsw_URL), shell=True)
     elif OS_Type == 'Linux':
-        _PlistBuddy2 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')
-        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), _PlistBuddy2, Ipsw_URL), shell=True)
+        subprocess.run('''{} -g "$({} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path" | sed 's/"//g')" "{}"'''.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy'), Ipsw_URL), shell=True)
     os.chdir(sshrd_work_dir)
     BuildManifest2 = open('work/BuildManifest.plist', 'rb').read().decode()
     subprocess.run('{} decrypt work/"{}" work/iBSS.dec'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest2).group()).replace('\t','').split('/')[2]), shell=True)
@@ -384,14 +380,14 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} -i work/"{}" -o work/kcache.raw'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest2).group()).replace('\t','')), shell=True)
     subprocess.run('{} work/kcache.raw work/kcache.patched -a'.format(os.path.join(sshrd_work_dir, OS_Type, 'Kernel64Patcher')), shell=True)
     KernelDiFF('work/kcache.raw', 'work/kcache.patched', 'work/kc.bpatch')
-    subprocess.run('{} -i work/"{}" -o sshramdisk/kernelcache.img4 -M work/IM4M -T rkrn -P work/kc.bpatch `if [ "$oscheck" = "Linux" ]; then echo "-J"; fi`'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest2).group()).replace('\t','')), shell=True)
-    subprocess.run('{} -i work/"{}" -o sshramdisk/devicetree.img4 -M work/IM4M -T rdtr'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest2).group()).replace('\t','')), shell=True)
+    subprocess.run('{} -i work/{} -o sshramdisk/kernelcache.img4 -M work/IM4M -T rkrn -P work/kc.bpatch `if [ "$oscheck" = "Linux" ]; then echo "-J"; fi`'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest2).group()).replace('\t','')), shell=True)
+    subprocess.run('{} -i work/{} -o sshramdisk/devicetree.img4 -M work/IM4M -T rdtr'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest2).group()).replace('\t','')), shell=True)
     if OS_Type == 'Darwin':
-        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n','')), shell=True)
-        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n','')), shell=True)
+        subprocess.run('''{} -i work/"$(/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - work/BuildManifest.plist | grep '<string>' |cut -d\> -f2 |cut -d\< -f1 | head -1)".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'''.format(os.path.join(sshrd_work_dir, OS_Type, 'img4')), shell=True)
+        subprocess.run('''{} -i work/"$(/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - work/BuildManifest.plist | grep '<string>' |cut -d\> -f2 |cut -d\< -f1 | head -1)" -o work/ramdisk.dmg'''.format(os.path.join(sshrd_work_dir, OS_Type, 'img4')), shell=True)
     elif OS_Type == 'Linux':
-        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')), shell=True)
-        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')), shell=True)
+        subprocess.run('''{} -i work/"$({} work/BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path" | sed 's/"//g')".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'''.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True)
+        subprocess.run('''{} -i work/"$({} work/BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path" | sed 's/"//g')" -o work/ramdisk.dmg'''.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True)
     if OS_Type == 'Darwin':
         subprocess.run('hdiutil resize -size 256MB work/ramdisk.dmg', shell=True)
         subprocess.run('hdiutil attach -mountpoint /tmp/SSHRD work/ramdisk.dmg', shell=True)

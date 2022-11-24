@@ -340,8 +340,7 @@ def SSHRD(arg, arg2='', arg3=''):
         subprocess.run('{} -c bootx'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
     if arg == '':
         raise "1st argument: iOS version for the ramdisk\n"
-    if not os.path.exists(os.path.join(sshrd_work_dir, 'work')):
-        os.makedirs('work', exist_ok=True)
+    os.makedirs('work', exist_ok=True)
     subprocess.run('{} pwn'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
     subprocess.run('{} -e -s shsh/"{}.shsh" -m work/IM4M'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4tool'), Check), shell=True)
     os.chdir(os.path.join(sshrd_work_dir, 'work'))

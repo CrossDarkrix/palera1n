@@ -283,6 +283,7 @@ def SSHRD(arg, arg2='', arg3=''):
             with zipfile.ZipFile(BytesIO(gaster_Data), 'r') as gaster_zip:
                 gaster_zip.extractall(OS_Type+'/.')
             print('[*] gaster Download Done!')
+            pass
     BackPath = os.getcwd()
     os.chdir(os.path.join(sshrd_work_dir, OS_Type))
     for chFile in sorted(os.listdir()):
@@ -308,6 +309,7 @@ def SSHRD(arg, arg2='', arg3=''):
             time.sleep(0.9)
     if os.path.exists('work'):
         shutil.rmtree('work')
+        pass
     os.makedirs('sshramdisk', exist_ok=True)
     if arg == 'boot':
         if not os.path.exists(os.path.join('sshramdisk', 'iBSS.img4')):
@@ -319,14 +321,19 @@ def SSHRD(arg, arg2='', arg3=''):
         subprocess.run('{} -f sshramdisk/iBEC.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
         if Check == '0x8010':
             Dev_Check = '1'
+            pass
         if Check == '0x8015':
             Dev_Check = '1'
+            pass
         if Check == '0x8010':
             Dev_Check = '1'
+            pass
         if Check == '0x8011':
             Dev_Check = '1'
+            pass
         if Check == '0x8012':
             Dev_Check = '1'
+            pass
         time.sleep(3.5)
         if Dev_Check == '1':
             subprocess.run('{} -c go'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
@@ -519,10 +526,13 @@ def main(argv):
         subprocess.run('defaults write -g ignore-devices -bool true', shell=True)
         subprocess.run('defaults write com.apple.AMPDevicesAgent dontAutomaticallySyncIPods -bool true', shell=True)
         subprocess.run('killall Finder', shell=True)
+        pass
     if OS_Type == 'Darwin':
         DownloadCheck = '1'
+        pass
     if OS_Type == 'Linux':
         DownloadCheck = '1'
+        pass
     if OS_Type == 'Windows':
         raise 'Unsupported OS Detected!\nExiting.....'
     if DownloadCheck == '1':
@@ -616,6 +626,7 @@ def main(argv):
             Remote_cmd('/sbin/reboot')
             _Kill_If_Running('iproxy')
             _Wait('recovery')
+            pass
         if Get_Device_Mode() == 'normal':
             iOSVersion = _Info('normal', 'ProductVersion')
             iDeviceArch = _Info('normal', 'CPUArchitecture')
@@ -625,6 +636,7 @@ def main(argv):
             print('[*] Switching device into recovery mode...')
             subprocess.run('{} {}'.format(os.path.join(Dir, 'ideviceenterrecovery'), _Info('normal', 'UniqueDeviceID')), shell=True)
             _Wait('recovery')
+            pass
         CPID = _Info('recovery', 'CPID')
         Model = _Info('recovery', 'MODEL')
         Device_iD = _Info('recovery', 'PRODUCT')
@@ -656,6 +668,7 @@ def main(argv):
                 os.remove('.tweaksinstalled')
             except:
                 shutil.rmtree('.tweaksinstalled')
+            pass
         if not Get_Device_Mode() == 'dfu':
             Recovery_Fix_Auto_Boot()
             if not _DFUHelper(CPID) == 0:
@@ -859,6 +872,7 @@ def main(argv):
             _Wait('recovery')
             _DFUHelper(CPID)
             time.sleep(1.9)
+            pass
         # Boot Create
         if not os.path.exists('boot-{}/.fsboot'.format(Device_iD)):
             shutil.rmtree('boot-{}'.format(Device_iD))

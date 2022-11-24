@@ -220,9 +220,11 @@ def _Exit_Handler():
 
 def RootStartiProxy():
     subprocess.run('sudo {} -2222 22'.format(os.path.join(Dir, 'iproxy')), shell=True)
+    return
 
 def StartiProxy():
     subprocess.run('{} -2222 22'.format(os.path.join(Dir, 'iproxy')), shell=True)
+    return
 
 def KernelDiFF(Original, Patched, arg3):
     SizeP = os.path.getsize(Patched)
@@ -338,6 +340,7 @@ def SSHRD(arg, arg2='', arg3=''):
         subprocess.run('{} -f sshramdisk/kernelcache.img4'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
         time.sleep(0.9)
         subprocess.run('{} -c bootx'.format(os.path.join(sshrd_work_dir, OS_Type, 'irecovery')), shell=True)
+        return
     if arg == '':
         raise "1st argument: iOS version for the ramdisk\n"
     os.makedirs('work', exist_ok=True)
@@ -416,6 +419,7 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} -m pyimg4 img4 create -p work/ramdisk.im4p -m work/IM4M -o sshramdisk/ramdisk.img4'.format(sys.executable), shell=True)
     subprocess.run('{} -i other/bootlogo.im4p -o sshramdisk/bootlogo.img4 -M work/IM4M -A -T rlgo'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4')), shell=True)
     shutil.rmtree('work')
+    return
 
 def ForceOptionAnswer():
     Answer = {'y':True, 'yes':True, 'n':False, 'no':False}

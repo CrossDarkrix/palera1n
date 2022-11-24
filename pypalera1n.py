@@ -346,20 +346,12 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} -g BuildManifest.plist "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), Ipsw_URL), shell=True)
     BuildManifest = open('BuildManifest.plist', 'rb').read().decode()
     subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
-    File = re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest).group()).replace('\t','').split('/')[-1]
-    DircTree = re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest).group()).replace('\t','').replace(File, '')
+    subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
+    subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
+    File = re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t','').split('/')[-1]
+    DircTree = re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t','').replace(File3, '')
     os.makedirs(DircTree, exist_ok=True)
     shutil.move(File, DircTree)
-    subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
-    File2 = re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(Replace), BuildManifest).group()).replace('\t','').split('/')[-1]
-    DircTree2 = re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(Replace), BuildManifest).group()).replace('\t','').replace(File2, '')
-    os.makedirs(DircTree2, exist_ok=True)
-    shutil.move(File2, DircTree2)
-    subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
-    File3 = re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t','').split('/')[-1]
-    DircTree3 = re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t','').replace(File3, '')
-    os.makedirs(DircTree3, exist_ok=True)
-    shutil.move(File3, DircTree3)
     if OS_Type == 'Darwin':
         subprocess.run('''{} -g Firmware/"$(/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist | grep '<string>' |cut -d\> -f2 |cut -d\< -f1 | head -1)".trustcache {}'''.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), Ipsw_URL), shell=True)
     elif OS_Type == 'Linux':

@@ -18,10 +18,8 @@ version = '1.3.0_py'
 OS_Type = platform.system()
 rootpath = os.getcwd()
 Dir = os.path.join(os.getcwd(), 'binaries', OS_Type)
-_commit, _ = subprocess.Popen('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE).communicate()
-_branch, _ = subprocess.Popen('git rev-parse --abbrev-ref HEAD', shell=True, stdout=subprocess.PIPE).communicate()
-commit = _commit.decode()
-branch = _branch.decode()
+commit = subprocess.Popen('git rev-parse --short HEAD', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()
+branch = subprocess.Popen('git rev-parse --abbrev-ref HEAD', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()
 LogFileName = '{}-{}-{}.log'.format(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'), platform.system(), platform.release())
 
 Tweaks = ['0']
@@ -91,17 +89,13 @@ def Recovery_Fix_Auto_Boot():
 
 def _Info(argm, sed):
     if argm == 'recovery':
-        __Ir, _ = subprocess.Popen('{} -q'.format(os.path.join(Dir, 'irecovery')), shell=True, stdout=subprocess.PIPE).communicate()
-        _Ir = __Ir.decode()
         try:
-            devinfo = re.search('({}:) (.+)'.format(sed), _Ir).group(2)
+            devinfo = re.search('({}:) (.+)'.format(sed), subprocess.Popen('{} -q'.format(os.path.join(Dir, 'irecovery')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group(2)
         except:
             devinfo = ''
     elif argm == 'normal':
-        __In, _ = subprocess.Popen('{}'.format(os.path.join(Dir, 'ideviceinfo')), shell=True, stdout=subprocess.PIPE).communicate()
-        _In = __In.decode()
         try:
-            devinfo = re.search('({}:) (.+)'.format(sed), _Ir).group(2)
+            devinfo = re.search('({}:) (.+)'.format(sed), subprocess.Popen('{}'.format(os.path.join(Dir, 'ideviceinfo')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group(2)
         except:
             devinfo = ''
     print(devinfo)
@@ -120,12 +114,10 @@ def _Reset():
 
 def Get_Device_Mode():
     if OS_Type == 'Darwin':
-        __Appl, _ = subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()
-        _Appl = re.findall('(?<= ID: ).+', __Appl.decode())
+        _Appl = re.findall('(?<= ID: ).+', subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()[0].decode())
         apples = [_Appl[i-1].split('x')[1] for i, x in enumerate(_Appl) if '0x05ac' in x]
     elif OS_Type == 'Linux':
-        __Appl, _ = subprocess.Popen('lsusb', shell=True, stdout=subprocess.PIPE).communicate()
-        _Appl = '\n'.join(x for x in __Appl.decode().split('\n') if '05ac:' in x)
+        _Appl = '\n'.join(x for x in subprocess.Popen('lsusb', shell=True, stdout=subprocess.PIPE).communicate()[0].decode().split('\n') if '05ac:' in x)
         apples = [xx.split(' ')[5].split(':')[1] for xx in _Appl.split('\n')]
     dev_count = 0
     for apple_device in apples:
@@ -155,13 +147,11 @@ def Get_Device_Mode():
     elif 2 <= dev_count:
         raise '[-] Please attach only one device'
     if OS_Type == 'Linux':
-        __Serial, _ = subprocess.Popen('cat /sys/bus/usb/devices/*/serial', shell=True, stdout=subprocess.PIPE).communicate()
-        _Serial = re.search('.*(\n{1})', __Serial.decode()).group().split('\n')[0]
+        if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('.*(\n{1})', subprocess.Popen('cat /sys/bus/usb/devices/*/serial', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split('\n')[0]).group():
+            Device_Mode[0] = 'ramdisk'
     elif OS_Type == 'Darwin':
-        __Serial, _ = subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()
-        _Serial = re.search('(Serial Number).*', __Serial.decode()).group().split(': ')[1]
-    if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', _Serial).group():
-        Device_Mode[0] = 'ramdisk'
+        if 'ramdisk tool' in re.search('ramdisk tool (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]{1,2} [0-9]{1,4} [0-9]{2}:[0-9]{2}:[0-9]{2}', re.search('(Serial Number).*', subprocess.Popen('system_profiler SPUSBDataType', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group().split(': ')[1]).group():
+            Device_Mode[0] = 'ramdisk'
     print(Device_Mode[0])
     return Device_Mode[0]
 
@@ -202,14 +192,10 @@ def _DFUHelper(device):
         return -1
 
 def _Kill_If_Running(process):
-    __Process, _ = subprocess.Popen('pgrep -u root -xf "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()
-    _Process = __Process.decode()
-    if not _Process == '':
+    if not subprocess.Popen('pgrep -u root -xf "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()[0].decode() == '':
         subprocess.run('sudo killall {}'.format(process), shell=True)
     else:
-        __Process2, _ = subprocess.Popen('pgrep -x "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()
-        _Process2 = __Process.decode()
-        if not _Process2 == '':
+        if not subprocess.Popen('pgrep -x "{}"'.format(process), shell=True, stdout=subprocess.PIPE).communicate()[0].decode() == '':
             subprocess.run('killall {}'.format(process), shell=True)
 
 def _Exit_Handler():
@@ -290,18 +276,14 @@ def SSHRD(arg, arg2='', arg3=''):
     Device_iD = _Info('recovery', 'PRODUCT')
     Dev_Check = '0'
     if OS_Type == 'Darwin':
-        __duf_check, _ = subprocess.Popen('system_profiler SPUSBDataType 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()
-        _duf_check = __duf_check.decode()
-        if not re.compile('.+(DFU Mode).+').search(_duf_check):
+        if not re.compile('.+(DFU Mode).+').search(subprocess.Popen('system_profiler SPUSBDataType 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()):
             print("[*] Waiting for device in DFU mode")
-        while not re.compile('.+(DFU Mode).+').search(_duf_check):
+        while not re.compile('.+(DFU Mode).+').search(subprocess.Popen('system_profiler SPUSBDataType 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()):
             time.sleep(0.9)
     elif OS_Type == 'Linux':
-        __duf_check, _ = subprocess.Popen('lsusb 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()
-        _duf_check = __duf_check.decode()
-        if not re.compile('.+(DFU Mode).+').search(_duf_check):
+        if not re.compile('.+(DFU Mode).+').search(subprocess.Popen('lsusb 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()):
             print("[*] Waiting for device in DFU mode")
-        while not re.compile('.+(DFU Mode).+').search(_duf_check):
+        while not re.compile('.+(DFU Mode).+').search(subprocess.Popen('lsusb 2> /dev/null', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()):
             time.sleep(0.9)
     if os.path.exists(os.path.join(sshrd_work_dir, 'work')):
         shutil.rmtree(os.path.join(sshrd_work_dir, 'work'))
@@ -363,18 +345,14 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
     subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
     if OS_Type == 'Darwin':
-        __plutil, _ = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -g Firmware/"{}".trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', __plutil.decode()).group()).replace('\n',''), Ipsw_URL), shell=True)
+        subprocess.run('{} -g Firmware/"{}".trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n',''), Ipsw_URL), shell=True)
     elif OS_Type == 'Linux':
-        __PlistBuddy, _ = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -g Firmware/"{}".trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), __PlistBuddy.decode().replace('"', ''), Ipsw_URL), shell=True)
+        subprocess.run('{} -g Firmware/"{}".trustcache "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', ''), Ipsw_URL), shell=True)
     subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)
     if OS_Type == 'Darwin':
-        __plutil2, _ = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', __plutil2.decode()).group()).replace('\n',''), Ipsw_URL), shell=True)
+        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n',''), Ipsw_URL), shell=True)
     elif OS_Type == 'Linux':
-        __PlistBuddy2, _ = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), __PlistBuddy2.decode().replace('"', ''), Ipsw_URL), shell=True)
+        subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', ''), Ipsw_URL), shell=True)
     os.chdir(sshrd_work_dir)
     BuildManifest2 = open('work/BuildManifest.plist', 'rb').read().decode()
     subprocess.run('{} decrypt work/"{}" work/iBSS.dec'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest2).group()).replace('\t','').split('/')[2]), shell=True)
@@ -389,13 +367,11 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} -i work/"{}" -o sshramdisk/kernelcache.img4 -M work/IM4M -T rkrn -P work/kc.bpatch `if [ "$oscheck" = "Linux" ]; then echo "-J"; fi`'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest2).group()).replace('\t','')), shell=True)
     subprocess.run('{} -i work/"{}" -o sshramdisk/devicetree.img4 -M work/IM4M -T rdtr'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(Replace), BuildManifest2).group()).replace('\t','')), shell=True)
     if OS_Type == 'Darwin':
-        __plutil3, _ = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', __plutil3.decode()).group()).replace('\n','')), shell=True)
-        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', __plutil3.decode()).group()).replace('\n','')), shell=True)
+        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n','')), shell=True)
+        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), re.sub('<.*?[string]>', '', re.search('<.*?[string]>(.+)<.*?[string]>', subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group()).replace('\n','')), shell=True)
     elif OS_Type == 'Linux':
-        __PlistBuddy3, _ = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()
-        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), __PlistBuddy3.decode().replace('"', '')), shell=True)
-        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), __PlistBuddy3.decode().replace('"', '')), shell=True)
+        subprocess.run('{} -i work/"{}".trustcache -o sshramdisk/trustcache.img4 -M work/IM4M -T rtsc'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')), shell=True)
+        subprocess.run('{} -i work/"{}" -o work/ramdisk.dmg'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4'), subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(sshrd_work_dir, OS_Type, 'PlistBuddy')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode().replace('"', '')), shell=True)
     if OS_Type == 'Darwin':
         subprocess.run('hdiutil resize -size 256MB work/ramdisk.dmg', shell=True)
         subprocess.run('hdiutil attach -mountpoint /tmp/SSHRD work/ramdisk.dmg', shell=True)

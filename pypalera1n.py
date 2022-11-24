@@ -343,6 +343,7 @@ def SSHRD(arg, arg2='', arg3=''):
     subprocess.run('{} pwn'.format(os.path.join(sshrd_work_dir, OS_Type, 'gaster')), shell=True)
     subprocess.run('{} -e -s shsh/"{}.shsh" -m work/IM4M'.format(os.path.join(sshrd_work_dir, OS_Type, 'img4tool'), Check), shell=True)
     os.chdir(os.path.join(sshrd_work_dir, 'work'))
+    os.makedirs('Firmware/all_flush', exist_ok=True)
     subprocess.run('{} -g BuildManifest.plist "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), Ipsw_URL), shell=True)
     BuildManifest = open('BuildManifest.plist', 'rb').read().decode()
     subprocess.run('{} -g "{}" "{}"'.format(os.path.join(sshrd_work_dir, OS_Type, 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(Replace), BuildManifest).group()).replace('\t',''), Ipsw_URL), shell=True)

@@ -546,52 +546,17 @@ class palera1n(object):
             subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').replace('/', os.sep), self.ipsw_url), shell=True)
             subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').replace('/', os.sep), self.ipsw_url), shell=True)
             if self.os_type == 'Darwin':
-                plutil_stdout = ''
-                while True:
-                    try:
-                        plutil_stdout = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except Exception as Err:
-                        print(Err)
-                        plutil_stdout = ''
-                        time.sleep(0.5)
-                    if not plutil_stdout == '':
-                        break
+                plutil_stdout = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), os.path.join('Firmware', '{}.trustcache'.format(re.sub('(<.*?[string]>)', '', plutil_stdout.split('<string>')[-1].replace('\n', '')))), self.ipsw_url), shell=True)
             if self.os_type == 'Linux':
-                plist_buddy_stdout = ''
-                while True:
-                    try:
-                        plist_buddy_stdout = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except Exception as Err:
-                        print(Err)
-                        plist_buddy_stdout = ''
-                        time.sleep(0.5)
-                    if not plist_buddy_stdout == '':
-                        break
+                plist_buddy_stdout = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), os.path.join('Firmware', '{}.trustcache'.format(plist_buddy_stdout.replace('"', ''))), self.ipsw_url), shell=True)
             subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t',''), self.ipsw_url), shell=True)
             if self.os_type == 'Darwin':
-                plutil_stdout2 = ''
-                while True:
-                    try:
-                        plutil_stdout2 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except Exception as Err:
-                        print(Err)
-                        plutil_stdout2 = ''
-                        time.sleep(0.5)
-                    if not plutil_stdout2 == '':
-                        break
+                plutil_stdout2 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), re.sub('(<.*?[string]>)', '', plutil_stdout2.split('<string>')[-1].replace('\n', '')), self.ipsw_url), shell=True)
             if self.os_type == 'Linux':
-                plist_buddy_stdout2 = ''
-                while True:
-                    try:
-                        plist_buddy_stdout2 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
-                        plist_buddy_stdout2 = ''
-                        time.sleep(0.5)
-                    if not plist_buddy_stdout2 == '':
-                        break
+                plist_buddy_stdout2 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), plist_buddy_stdout2.replace('"', ''), self.ipsw_url), shell=True)
             os.chdir(self.default_path)
             subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1]), os.path.join('ramdisk_work', 'iBSS.dec')), shell=True)
@@ -619,29 +584,11 @@ class palera1n(object):
                 subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join('ramdisk_work', 'IM4M'), os.path.join('ramdisk_work', 'kc.bpatch')), shell=True)
             subprocess.run('%s -i %s -o %s -M %s -T rdtr' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1]), os.path.join('sshramdisk', 'devicetree.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
             if self.os_type == 'Darwin':
-                plutil_stdout3 = ''
-                while True:
-                    try:
-                        plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join('ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except Exception as Err:
-                        print(Err)
-                        plutil_stdout3 = ''
-                        time.sleep(0.5)
-                    if not plutil_stdout3 == '':
-                        break
+                plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join('ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -i {}.trustcache -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', '')), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
                 subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', '')), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Linux':
-                plist_buddy_stdout3 = ''
-                while True:
-                    try:
-                        plist_buddy_stdout3 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except Exception as Err:
-                        print(Err)
-                        plist_buddy_stdout3 = ''
-                        time.sleep(0.5)
-                    if not plist_buddy_stdout3 == '':
-                        break
+                plist_buddy_stdout3 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -i {}.trustcache -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', plist_buddy_stdout3.replace('"', '')), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
                 subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', plist_buddy_stdout3.replace('"', '')), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Darwin':

@@ -6,7 +6,6 @@ Python Script Author: CrossDarkrix
 Version: 1.3.5(python3)
 '''
 
-
 import argparse, ast, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, urllib.request, zipfile
 from datetime import datetime
 from math import floor

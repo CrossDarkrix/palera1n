@@ -550,7 +550,8 @@ class palera1n(object):
                 while True:
                     try:
                         plutil_stdout = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
+                    except Exception as Err:
+                        print(Err)
                         plutil_stdout = ''
                         time.sleep(0.5)
                     if not plutil_stdout == '':
@@ -561,8 +562,10 @@ class palera1n(object):
                 while True:
                     try:
                         plist_buddy_stdout = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
+                    except Exception as Err:
+                        print(Err)
                         plist_buddy_stdout = ''
+                        time.sleep(0.5)
                     if not plist_buddy_stdout == '':
                         break
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), os.path.join('Firmware', '{}.trustcache'.format(plist_buddy_stdout.replace('"', ''))), self.ipsw_url), shell=True)
@@ -572,7 +575,8 @@ class palera1n(object):
                 while True:
                     try:
                         plutil_stdout2 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - BuildManifest.plist', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
+                    except Exception as Err:
+                        print(Err)
                         plutil_stdout2 = ''
                         time.sleep(0.5)
                     if not plutil_stdout2 == '':
@@ -619,7 +623,8 @@ class palera1n(object):
                 while True:
                     try:
                         plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join('ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
+                    except Exception as Err:
+                        print(Err)
                         plutil_stdout3 = ''
                         time.sleep(0.5)
                     if not plutil_stdout3 == '':
@@ -631,7 +636,8 @@ class palera1n(object):
                 while True:
                     try:
                         plist_buddy_stdout3 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                    except:
+                    except Exception as Err:
+                        print(Err)
                         plist_buddy_stdout3 = ''
                         time.sleep(0.5)
                     if not plist_buddy_stdout3 == '':

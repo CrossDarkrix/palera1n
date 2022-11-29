@@ -535,7 +535,7 @@ class palera1n(object):
             os.makedirs('sshramdisk', exist_ok=True)
             os.makedirs('ramdisk_work', exist_ok=True)
             subprocess.run('{} pwn'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster')), shell=True)
-            subprocess.run('{} -e -s {} -m {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4tool'), os.path.join('ramdisk_shsh', '{}.shsh'.format(self.sshrd_check)), os.path.join('ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('{} -e -s {} -m {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4tool'), os.path.join('ramdisk_shsh', '{}.shsh'.format(self.sshrd_check)), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             os.chdir(os.path.join(self.default_path, 'ramdisk_work'))
             subprocess.run('{} -g BuildManifest.plist {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), self.ipsw_url), shell=True)
             try:
@@ -559,10 +559,10 @@ class palera1n(object):
                 plist_buddy_stdout2 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
                 subprocess.run('{} -g {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), plist_buddy_stdout2.replace('\n', '').replace('"', ''), self.ipsw_url), shell=True)
             os.chdir(self.default_path)
-            subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join('ramdisk_work', 'iBSS.dec')), shell=True)
-            subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join('ramdisk_work', 'iBEC.dec')), shell=True)
-            subprocess.run('%s %s %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join('ramdisk_work', 'iBSS.dec'), os.path.join('ramdisk_work', 'iBSS.patched')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -A -T ibss' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', 'iBSS.patched'), os.path.join('sshramdisk', 'iBSS.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.dec')), shell=True)
+            subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec')), shell=True)
+            subprocess.run('%s %s %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.patched')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -A -T ibss' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.patched'), os.path.join('sshramdisk', 'iBSS.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             option_check = '0'
             if self.sshrd_check == '0x8960':
                 option_check = '1'
@@ -571,71 +571,72 @@ class palera1n(object):
             if self.sshrd_check == '0x7001':
                 option_check
             if option_check == '1':
-                subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1 -restore" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join('ramdisk_work', 'iBEC.dec'), os.path.join('ramdisk_work', 'iBEC.patched')), shell=True)
+                subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1 -restore" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched')), shell=True)
             else:
-                subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join('ramdisk_work', 'iBEC.dec'), os.path.join('ramdisk_work', 'iBEC.patched')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -A -T ibec' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', 'iBEC.patched'), os.path.join('sshramdisk', 'iBEC.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
-            subprocess.run('%s -i %s -o %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('ramdisk_work', 'kcache.raw')), shell=True)
-            subprocess.run('%s %s %s -a' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'Kernel64Patcher'), os.path.join('ramdisk_work', 'kcache.raw'), os.path.join('ramdisk_work', 'kcache.patched')), shell=True)
-            self.kerneldiff(os.path.join('ramdisk_work', 'kcache.raw'), os.path.join('ramdisk_work', 'kcache.patched'), os.path.join('ramdisk_work', 'kc.bpatch'))
+                subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched')), shell=True)
+                subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -A -T ibec' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched'), os.path.join('sshramdisk', 'iBEC.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('%s -i %s -o %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw')), shell=True)
+            subprocess.run('%s %s %s -a' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'Kernel64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.patched')), shell=True)
+            self.kerneldiff(os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.patched'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch'))
             if self.os_type == 'Linux':
-                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s -J' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join('ramdisk_work', 'IM4M'), os.path.join('ramdisk_work', 'kc.bpatch')), shell=True)
+                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s -J' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
             if self.os_type == 'Darwin':
-                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join('ramdisk_work', 'IM4M'), os.path.join('ramdisk_work', 'kc.bpatch')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -T rdtr' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join('sshramdisk', 'devicetree.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -T rdtr' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join('sshramdisk', 'devicetree.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             if self.os_type == 'Darwin':
-                plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join('ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), '{}.trustcache'.format(re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
-                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', '')), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
+                plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join(self.default_path, 'ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
+                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), '{}.trustcache'.format(re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Linux':
                 plist_buddy_stdout3 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', '{}.trustcache'.format(plist_buddy_stdout3.replace('\n', '').replace('"', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
-                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_work', plist_buddy_stdout3.replace('\n', '').replace('"', '')), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
+                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', '{}.trustcache'.format(plist_buddy_stdout3.replace('\n', '').replace('"', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', plist_buddy_stdout3.replace('\n', '').replace('"', '')), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Darwin':
                 subprocess.run('hdiutil resize -size 256MB work/ramdisk.dmg', shell=True)
-                subprocess.run('hdiutil attach -mountpoint /tmp/SSHRD {}'.format(os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
+                subprocess.run('hdiutil attach -mountpoint /tmp/SSHRD {}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
                 subprocess.run('{} -x --no-overwrite-dir -f {} -C /tmp/SSHRD/'.format(os.path.join('ramdisk_other', 'ramdisk.tar.gz')), shell=True)
                 if not arg2 == 'rootless':
                     with zipfile.ZipFile(os.path.join('ramdisk_Pogo', 'Pogo.zip'), 'r') as pogo_ipa:
-                        pogo_ipa.extractall(os.path.join('ramdisk_work', 'Pogo')+'/.')
-                    with zipfile.ZipFile(os.path.join('ramdisk_work', 'Pogo', 'Pogo.ipa'), 'r') as pogo:
-                        pogo.extractall(os.path.join('ramdisk_work', 'Pogo', 'Pogo')+'/.')
+                        pogo_ipa.extractall(os.path.join(self.default_path, 'ramdisk_work', 'Pogo')+'/.')
+                    with zipfile.ZipFile(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo.ipa'), 'r') as pogo:
+                        pogo.extractall(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo')+'/.')
                     try:
                         shutil.rmtree('/tmp/SSHRD/usr/local/bin/loader.app')
                     except:
                         pass
                     try:
-                        shutil.copytree(os.path.join('ramdisk_work', 'Pogo', 'Pogo', 'Payload', 'Pogo.app'), '/tmp/SSHRD/usr/local/bin/loader.app')
+                        shutil.copytree(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo', 'Payload', 'Pogo.app'), '/tmp/SSHRD/usr/local/bin/loader.app')
                     except:
                         pass
                     os.rename('/tmp/SSHRD/usr/local/bin/loader.app/Pogo', '/tmp/SSHRD/usr/local/bin/loader.app/Tips')
                 subprocess.run('hdiutil detach -force /tmp/SSHRD', shell=True)
-                subprocess.run('hdiutil resize -sectors min {}'.format(os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
+                subprocess.run('hdiutil resize -sectors min {}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Linux':
                 if os.path.exists(os.path.join('ramdisk_other', 'ramdisk.tar.gz')):
                     with tarfile.open(os.path.join('ramdisk_other', 'ramdisk.tar.gz'), 'r:gz') as ramdisk_tar:
                         ramdisk_tar.extractall(path='ramdisk_other/.')
-                    subprocess.run('{} {} grow 300000000'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    subprocess.run('{} {} untar {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join('ramdisk_work', 'ramdisk.dmg'), os.path.join('ramdisk_other', 'ramdisk.tar')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subprocess.run('{} {} grow 300000000'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subprocess.run('{} {} untar {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg'), os.path.join('ramdisk_other', 'ramdisk.tar')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     if not arg2 == 'rootless':
                         with zipfile.ZipFile(os.path.join('ramdisk_Pogo', 'Pogo.zip'), 'r') as pogo_ipa:
-                            pogo_ipa.extractall(os.path.join('ramdisk_work', 'Pogo')+'/.')
-                        with zipfile.ZipFile(os.path.join('ramdisk_work', 'Pogo', 'Pogo.ipa'), 'r') as pogo:
-                            pogo.extractall(os.path.join('ramdisk_work', 'Pogo', 'Pogo')+'/.')
-                        os.makedirs(os.path.join('ramdisk_work', 'Pogo', 'uwu', 'usr', 'local', 'bin'), exist_ok=True)
-                        shutil.copytree(os.path.join('ramdisk_work', 'Pogo', 'Pogo', 'Payload', 'Pogo.app'), os.path.join('ramdisk_work', 'Pogo', 'uwu', 'usr', 'local', 'bin', 'loader.app'))
-                        subprocess.run('{} {} rmall usr/local/bin/loader.app'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                        subprocess.run('{} {} addall {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join('ramdisk_work', 'ramdisk.dmg'), os.path.join('ramdisk_work', 'Pogo', 'uwu')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                        subprocess.run('{} {} mv /usr/local/bin/loader.app/Pogo /usr/local/bin/loader.app/Tips'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            pogo_ipa.extractall(os.path.join(self.default_path, 'ramdisk_work', 'Pogo')+'/.')
+                        with zipfile.ZipFile(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo.ipa'), 'r') as pogo:
+                            pogo.extractall(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo')+'/.')
+                        os.makedirs(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'uwu', 'usr', 'local', 'bin'), exist_ok=True)
+                        shutil.copytree(os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'Pogo', 'Payload', 'Pogo.app'), os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'uwu', 'usr', 'local', 'bin', 'loader.app'))
+                        subprocess.run('{} {} rmall usr/local/bin/loader.app'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        subprocess.run('{} {} addall {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg'), os.path.join(self.default_path, 'ramdisk_work', 'Pogo', 'uwu')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        subprocess.run('{} {} mv /usr/local/bin/loader.app/Pogo /usr/local/bin/loader.app/Tips'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'hfsplus'), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             try:
-                pyimg4(['im4p', 'create', '-i', '{}'.format(os.path.join('ramdisk_work', 'ramdisk.dmg')), '-o', '{}'.format(os.path.join('ramdisk_work', 'ramdisk.im4p')), '-f', 'rdsk'])
+                pyimg4(['im4p', 'create', '-i', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), '-o', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.im4p')), '-f', 'rdsk'])
             except SystemExit:
                 pass
             try:
-                pyimg4(['img4', 'create', '-p', '{}'.format(os.path.join('ramdisk_work', 'ramdisk.im4p')), '-m', '{}'.format(os.path.join('ramdisk_work', 'IM4M')), '-o', '{}'.format(os.path.join('sshramdisk', 'ramdisk.img4'))])
+                pyimg4(['img4', 'create', '-p', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.im4p')), '-m', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), '-o', '{}'.format(os.path.join('sshramdisk', 'ramdisk.img4'))])
             except SystemExit:
                 pass
-            subprocess.run('{} -i {} -o {} -M {} -A -T rlgo'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_other', 'bootlogo.im4p'), os.path.join('sshramdisk', 'bootlogo.img4'), os.path.join('ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('{} -i {} -o {} -M {} -A -T rlgo'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_other', 'bootlogo.im4p'), os.path.join('sshramdisk', 'bootlogo.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             shutil.rmtree('ramdisk_work')
             return
         return

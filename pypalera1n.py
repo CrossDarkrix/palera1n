@@ -401,8 +401,8 @@ class palera1n(object):
                 patched_byte = patched_data[d]
                 if not original_byte == patched_byte:
                     if a == 1e6:
-                        for d in self.diff:
-                            diff_file.write('{} {} {}\n'.format(d[0], d[1], d[2]))
+                        for d1 in self.diff:
+                            diff_file.write('{} {} {}\n'.format(d1[0], d1[1], d1[2]))
                         self.diff = []
                         a = 0
                     self.diff.append([hex(d), hex(original_byte), hex(patched_byte)])
@@ -611,7 +611,7 @@ class palera1n(object):
                     os.rename('/tmp/SSHRD/usr/local/bin/loader.app/Pogo', '/tmp/SSHRD/usr/local/bin/loader.app/Tips')
                 subprocess.run('hdiutil detach -force /tmp/SSHRD', shell=True)
                 subprocess.run('hdiutil resize -sectors min {}'.format(os.path.join('ramdisk_work', 'ramdisk.dmg')), shell=True)
-            if os_type == 'Linux':
+            if self.os_type == 'Linux':
                 if os.path.exists(os.path.join('ramdisk_other', 'ramdisk.tar.gz')):
                     with tarfile.open(os.path.join('ramdisk_other', 'ramdisk.tar.gz'), 'r:gz') as ramdisk_tar:
                         ramdisk_tar.extractall(path='ramdisk_other/.')

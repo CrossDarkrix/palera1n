@@ -6,6 +6,7 @@ Python Script Author: CrossDarkrix
 Version: 1.3.5(python3)
 '''
 
+
 import argparse, ast, json, os, platform, re, shutil, subprocess, sys, tarfile, threading, time, urllib.request, zipfile
 from datetime import datetime
 from math import floor
@@ -734,7 +735,7 @@ class palera1n(object):
                     pass
             os.chdir(self.default_path)
             # show logo
-            print('palera1n | Version {}-{}-{}\nWritten by Nebula and Mineek | Some code and ramdisk from Nathan | Loader app by Amy\n'.format(version, branch, commit))
+            print('palera1n | Version {}-{}-{}\nWritten by Nebula and Mineek | Some code and ramdisk from Nathan | Loader app by Amy\n'.format(self.version, self.branch, self.commit))
             if self.clean_option == '1':
                 for clean_dir in sorted(os.listdir(self.default_path)):
                     if 'boot' in clean_dir:

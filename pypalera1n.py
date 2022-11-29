@@ -1126,7 +1126,6 @@ If this is your first time jailbreaking, open Tips app and then press Install
 Otherwise, open Tips app and press Do All in the Tools section
 If you have any issues, please join the Discord server and ask for help: https://dsc.gg/palera1n
 Enjoy!''')
-        # end
 
 
 if __name__ == '__main__':

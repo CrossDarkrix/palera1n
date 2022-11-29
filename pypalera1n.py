@@ -2,7 +2,7 @@
 
 '''
 Name: palera1n python3 edition
-Author: CrossDarkrix
+Python Script Author: CrossDarkrix
 Version: 1.3.5(python3)
 '''
 

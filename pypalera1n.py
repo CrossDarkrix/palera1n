@@ -384,6 +384,7 @@ class palera1n(object):
         return
 
     def kerneldiff(self, original, patched, arg):
+        global dif
         sizeP = os.path.getsize(patched)
         sizeO = os.path.getsize(original)
         if not sizeP == sizeO:
@@ -400,14 +401,14 @@ class palera1n(object):
                 patched_byte = patched_data[d]
                 if not original_byte == patched_byte:
                     if a == 1e6:
-                        for dif in self.diff:
-                            diff_file.write('{} {} {}\n'.format(dif[0], dif[1], dif[2]))
+                        for d in self.diff:
+                            diff_file.write('{} {} {}\n'.format(d[0], d[1], d[2]))
                         self.diff = []
                         a = 0
                     self.diff.append([hex(d), hex(original_byte), hex(patched_byte)])
                     a += 1
-            for dif2 in self.diff:
-                diff_file.write('{} [] {}\n'.format(dif2[0], dif2[1], dif2[2]))
+            for d2 in self.diff:
+                diff_file.write('{} [] {}\n'.format(d2[0], d2[1], d2[2]))
 
     def sshrd_sh(self, arg, arg2='', arg3=''):
         if arg == '':

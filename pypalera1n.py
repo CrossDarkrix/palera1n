@@ -407,8 +407,7 @@ class palera1n(object):
                     self.diff.append([hex(d), hex(original_byte), hex(patched_byte)])
                     a += 1
             for dif2 in self.diff:
-                diff_file.write('{} [] {}\n'.format(dif2[0], dif[1], dif[2]))
-        return
+                diff_file.write('{} [] {}\n'.format(dif2[0], dif2[1], dif2[2]))
 
     def sshrd_sh(self, arg, arg2='', arg3=''):
         if arg == '':

@@ -896,14 +896,15 @@ class palera1n(object):
                     pass
                 while self.remote_command_sender('echo connected') == '':
                     time.sleep(1)
-                print("[*] Testing for baseband presence")
-                if self.remote_command_sender("/usr/bin/mgask HasBaseband | grep -E 'true|false'") == 'true' and re.compile('.*0x7001.*').search(self.cpid):
-                    self.default_disk_numbar = 7
-                elif self.remote_command_sender("/usr/bin/mgask HasBaseband | grep -E 'true|false'") == 'false':
-                    if re.compile('.*0x7001.*').search(self.cpid):
-                        self.default_disk_numbar = 6
-                    else:
+                if self.no_baseband_option == '0':
+                    print("[*] Testing for baseband presence")
+                    if self.remote_command_sender("/usr/bin/mgask HasBaseband | grep -E 'true|false'") == 'true' and re.compile('.*0x7001.*').search(self.cpid):
                         self.default_disk_numbar = 7
+                    elif self.remote_command_sender("/usr/bin/mgask HasBaseband | grep -E 'true|false'") == 'false':
+                        if re.compile('.*0x7001.*').search(self.cpid):
+                            self.default_disk_numbar = 6
+                        else:
+                            self.default_disk_numbar = 7
                 self.remote_command_sender('/usr/bin/mount_filesystems')
                 self.has_active = self.remote_command_sender('ls /mnt6/active')
                 if not self.has_active == '/mnt6/active':

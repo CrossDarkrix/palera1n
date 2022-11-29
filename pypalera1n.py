@@ -535,7 +535,7 @@ class palera1n(object):
             os.makedirs('sshramdisk', exist_ok=True)
             os.makedirs('ramdisk_work', exist_ok=True)
             subprocess.run('{} pwn'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster')), shell=True)
-            subprocess.run('{} -e -s {} -m {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4tool'), os.path.join('shsh', '{}.shsh'.format(self.sshrd_check)), os.path.join('ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('{} -e -s {} -m {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4tool'), os.path.join('ramdisk_shsh', '{}.shsh'.format(self.sshrd_check)), os.path.join('ramdisk_work', 'IM4M')), shell=True)
             os.chdir(os.path.join(self.default_path, 'ramdisk_work'))
             subprocess.run('{} -g BuildManifest.plist {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'pzb'), self.ipsw_url), shell=True)
             try:

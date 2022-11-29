@@ -178,7 +178,7 @@ class palera1n(object):
                 device_info = re.search('({}:) (.+)'.format(keywords), subprocess.Popen('{} -q'.format(os.path.join(self.binary_path, 'irecovery')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group(2)
             except:
                 device_info = ''
-        if arg == 'normal':
+        elif arg == 'normal':
             try:
                 device_info = re.search('({}:) (.+)'.format(keywords), subprocess.Popen('{}'.format(os.path.join(self.binary_path, 'ideviceinfo')), shell=True, stdout=subprocess.PIPE).communicate()[0].decode()).group(2)
             except:
@@ -809,8 +809,7 @@ class palera1n(object):
                 else:
                     print('Hello, {} on {}'.format(self.info('normal', 'ProductType'), self.iDeviceVersion))
                     print('[*] Switching device into recovery mode...')
-                    udid = self.info('normal', 'UniqueDeviceID')
-                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), udid), shell=True)
+                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), self.info('normal', 'UniqueDeviceID')), shell=True)
                     self.wait('recovery')
                     pass
             self.cpid = self.info('recovery', 'CPID')
@@ -1077,14 +1076,12 @@ class palera1n(object):
                     self.wait('normal')
                     time.sleep(5)
                     print("[*] Switching device into recovery mode...")
-                    udid = self.info('normal', 'UniqueDeviceID')
-                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), udid), shell=True)
+                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), self.info('normal', 'UniqueDeviceID')), shell=True)
                 elif self.tweak_option == '1':
                     self.wait('normal')
                     time.sleep(5)
                     print("[*] Switching device into recovery mode...")
-                    udid = self.info('normal', 'UniqueDeviceID')
-                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), udid), shell=True)
+                    subprocess.run('{} {}'.format(os.path.join(self.binary_path, 'ideviceenterrecovery'), self.info('normal', 'UniqueDeviceID')), shell=True)
                 self.wait('recovery')
                 self.dfuhelper(self.cpid)
                 time.sleep(2)

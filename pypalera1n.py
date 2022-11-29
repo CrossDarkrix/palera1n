@@ -129,7 +129,8 @@ class palera1n(object):
             self.clean_option = '1'
         try:
             self.main()
-        except:
+        except Exception as Err:
+            print('[!] {}'.format(Err))
             self.exit_handler()
 
     def remote_command_sender(self, cmd):
@@ -735,7 +736,7 @@ class palera1n(object):
                     pass
             os.chdir(self.default_path)
             # show logo
-            print('palera1n | Version {}-{}-{}\nWritten by Nebula and Mineek | Some code and ramdisk from Nathan | Loader app by Amy\n'.format(self.version, self.branch, self.commit))
+            print('palera1n | Version {}-{}-{}\nWritten by Nebula and Mineek | Some code and ramdisk from Nathan | Loader app by Amy\n'.format(self.version, self.git_branch, self.git_commit))
             if self.clean_option == '1':
                 for clean_dir in sorted(os.listdir(self.default_path)):
                     if 'boot' in clean_dir:

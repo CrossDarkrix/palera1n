@@ -422,9 +422,9 @@ class palera1n(object):
             time.sleep(0.5)
             subprocess.run('{} reset'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster')), shell=True)
             time.sleep(0.5)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'iBSS.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'iBSS.img4')), shell=True)
             time.sleep(3)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'iBEC.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'iBEC.img4')), shell=True)
             if self.sshrd_check == '0x8010':
                 self.sshrd_device_check = '1'
                 pass
@@ -445,23 +445,23 @@ class palera1n(object):
                 time.sleep(7)
             else:
                 time.sleep(7)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'bootlogo.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'bootlogo.img4')), shell=True)
             time.sleep(1)
             subprocess.run('{} -c "setpicture 0x1"'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery')), shell=True)
             time.sleep(1)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'ramdisk.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'ramdisk.img4')), shell=True)
             time.sleep(1)
             subprocess.run('{} -c ramdisk'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery')), shell=True)
             time.sleep(1)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'devicetree.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'devicetree.img4')), shell=True)
             time.sleep(1)
             subprocess.run('{} -c devicetree'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery')), shell=True)
             time.sleep(1)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'trustcache.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'trustcache.img4')), shell=True)
             time.sleep(1)
             subprocess.run('{} -c firmware'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery')), shell=True)
             time.sleep(1)
-            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join('sshramdisk', 'kernelcache.img4')), shell=True)
+            subprocess.run('{} -f {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery'), os.path.join(self.default_path, 'sshramdisk', 'kernelcache.img4')), shell=True)
             time.sleep(1)
             subprocess.run('{} -c bootx'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'irecovery')), shell=True)
             return
@@ -562,7 +562,7 @@ class palera1n(object):
             subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBSS[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.dec')), shell=True)
             subprocess.run('{} decrypt {} {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*iBEC[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec')), shell=True)
             subprocess.run('%s %s %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.patched')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -A -T ibss' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.patched'), os.path.join('sshramdisk', 'iBSS.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -A -T ibss' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBSS.patched'), os.path.join(self.default_path, 'sshramdisk', 'iBSS.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             option_check = '0'
             if self.sshrd_check == '0x8960':
                 option_check = '1'
@@ -575,23 +575,23 @@ class palera1n(object):
             else:
                 subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched')), shell=True)
                 subprocess.run('%s %s %s -b "rd=md0 debug=0x2014e wdt=-1" -n' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'iBoot64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.dec'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -A -T ibec' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched'), os.path.join('sshramdisk', 'iBEC.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -A -T ibec' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', 'iBEC.patched'), os.path.join(self.default_path, 'sshramdisk', 'iBEC.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             subprocess.run('%s -i %s -o %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw')), shell=True)
             subprocess.run('%s %s %s -a' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'Kernel64Patcher'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.patched')), shell=True)
             self.kerneldiff(os.path.join(self.default_path, 'ramdisk_work', 'kcache.raw'), os.path.join(self.default_path, 'ramdisk_work', 'kcache.patched'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch'))
             if self.os_type == 'Linux':
-                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s -J' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
+                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s -J' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join(self.default_path, 'sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
             if self.os_type == 'Darwin':
-                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join('sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
-            subprocess.run('%s -i %s -o %s -M %s -T rdtr' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join('sshramdisk', 'devicetree.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('%s -i %s -o %s -M %s -T rkrn -P %s' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.*kernelcache.release[.].*', BuildManifest).group()).replace('\t','').replace('\n', '')), os.path.join(self.default_path, 'sshramdisk', 'kernelcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M'), os.path.join(self.default_path, 'ramdisk_work', 'kc.bpatch')), shell=True)
+            subprocess.run('%s -i %s -o %s -M %s -T rdtr' % (os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', re.sub('<.*?[string]>', '', re.search('.+[{}].*DeviceTree[.].*'.format(self.sshrd_replace), BuildManifest).group()).replace('\t','').split('/')[-1].replace('\n', '')), os.path.join(self.default_path, 'sshramdisk', 'devicetree.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             if self.os_type == 'Darwin':
                 plutil_stdout3 = subprocess.Popen('/usr/bin/plutil -extract "BuildIdentities".0."Manifest"."RestoreRamDisk"."Info"."Path" xml1 -o - {}'.format(os.path.join(self.default_path, 'ramdisk_work', 'BuildManifest.plist')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), '{}.trustcache'.format(re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), '{}.trustcache'.format(re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', ''))), os.path.join(self.default_path, 'sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
                 subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), re.sub('(<.*?[string]>)', '', plutil_stdout3.split('<string>')[-1].replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Linux':
-                plist_buddy_stdout3 = subprocess.Popen('{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path"'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
-                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', '{}.trustcache'.format(plist_buddy_stdout3.replace('\n', '').replace('"', ''))), os.path.join('sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
-                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', plist_buddy_stdout3.replace('\n', '').replace('"', '')), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
+                plist_buddy_stdout3 = subprocess.Popen("""{} BuildManifest.plist -c "Print BuildIdentities:0:Manifest:RestoreRamDisk:Info:Path" | sed 's/"//g'""".format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'PlistBuddy')), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].decode()
+                subprocess.run('{} -i {} -o {} -M {} -T rtsc'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', '{}.trustcache'.format(plist_buddy_stdout3.replace('\n', '').replace('"', ''))), os.path.join(self.default_path, 'sshramdisk', 'trustcache.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+                subprocess.run('{} -i {} -o {}'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join(self.default_path, 'ramdisk_work', plist_buddy_stdout3.replace('\n', '')), os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
             if self.os_type == 'Darwin':
                 subprocess.run('hdiutil resize -size 256MB work/ramdisk.dmg', shell=True)
                 subprocess.run('hdiutil attach -mountpoint /tmp/SSHRD {}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.dmg')), shell=True)
@@ -633,10 +633,10 @@ class palera1n(object):
             except SystemExit:
                 pass
             try:
-                pyimg4(['img4', 'create', '-p', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.im4p')), '-m', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), '-o', '{}'.format(os.path.join('sshramdisk', 'ramdisk.img4'))])
+                pyimg4(['img4', 'create', '-p', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'ramdisk.im4p')), '-m', '{}'.format(os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), '-o', '{}'.format(os.path.join(self.default_path, 'sshramdisk', 'ramdisk.img4'))])
             except SystemExit:
                 pass
-            subprocess.run('{} -i {} -o {} -M {} -A -T rlgo'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_other', 'bootlogo.im4p'), os.path.join('sshramdisk', 'bootlogo.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
+            subprocess.run('{} -i {} -o {} -M {} -A -T rlgo'.format(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'img4'), os.path.join('ramdisk_other', 'bootlogo.im4p'), os.path.join(self.default_path, 'sshramdisk', 'bootlogo.img4'), os.path.join(self.default_path, 'ramdisk_work', 'IM4M')), shell=True)
             shutil.rmtree('ramdisk_work')
             return
         return

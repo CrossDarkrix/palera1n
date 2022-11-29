@@ -158,6 +158,7 @@ class palera1n(object):
                 pass
             time.sleep(1)
         print('{} (0)\n'.format(message), end='\r', flush=True)
+        print(colorama.Fore.RESET)
         return
 
     def recovery_fix_auto_boot(self):
@@ -376,11 +377,11 @@ class palera1n(object):
         sys.exit(1)
 
     def starting_iproxy(self):
-        subprocess.run('{} -2222 22'.format(os.path.join(self.binary_path, 'iproxy')), shell=True)
+        subprocess.run('{} 2222 22'.format(os.path.join(self.binary_path, 'iproxy')), shell=True)
         return
 
     def starting_root_iproxy(self):
-        subprocess.run('sudo {} -2222 22'.format(os.path.join(self.binary_path, 'iproxy')), shell=True)
+        subprocess.run('sudo {} 2222 22'.format(os.path.join(self.binary_path, 'iproxy')), shell=True)
         return
 
     def kerneldiff(self, original, patched, arg):

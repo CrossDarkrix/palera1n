@@ -134,7 +134,7 @@ class palera1n(object):
             self.exit_handler()
 
     def remote_command_sender(self, cmd):
-        out, err = subprocess.Popen('{} -p "alpine" ssh -o StrictHostKeyChecking=no -p2222 root@localhost "{}"'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        out, err = subprocess.Popen('{} -p "alpine" ssh -o StrictHostKeyChecking=no -p2222 root@localhost "{}"'.format(os.path.join(self.binary_path, 'sshpass'), cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
         output = out.decode()
         errors = err.decode()
         if not output == '':
@@ -143,7 +143,7 @@ class palera1n(object):
             return errors
 
     def remote_cp(self, cmd):
-        subprocess.run('{} -p "alpine" scp -o StrictHostKeyChecking=no -P2222 {}'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True)
+        subprocess.run('{} -p "alpine" scp -o StrictHostKeyChecking=no -P2222 {}'.format(os.path.join(self.binary_path, 'sshpass'), cmd), shell=True)
         return
 
     def step(self, numbar, message):

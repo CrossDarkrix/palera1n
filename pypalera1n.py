@@ -392,7 +392,7 @@ class palera1n(object):
         patched_data = open(patched, 'rb').read()
         original_data = open(original, 'rb').read()
         a = 0
-        diff = []
+        self.diff = []
         with open(arg, 'w+') as diff_file:
             diff_file.write('#AMFI\n\n')
             for d in range(sizeO):
@@ -400,13 +400,13 @@ class palera1n(object):
                 patched_byte = patched_data[d]
                 if not original_byte == patched_byte:
                     if a == 1e6:
-                        for dif in diff:
+                        for dif in self.diff:
                             diff_file.write('{} {} {}\n'.format(dif[0], dif[1], dif[2]))
-                        diff = []
+                        self.diff = []
                         a = 0
-                    diff.append([hex(d), hex(original_byte), hex(patched_byte)])
+                    self.diff.append([hex(d), hex(original_byte), hex(patched_byte)])
                     a += 1
-            for dif2 in diff:
+            for dif2 in self.diff:
                 diff_file.write('{} [] {}\n'.format(dif2[0], dif[1], dif[2]))
         return
 

@@ -26,9 +26,8 @@ except:
     import colorama
 
 colorama.init()
-os.makedirs('logs', exist_ok=True)
 
-class logger: # output stdout & logfile.
+class logger(object): # output stdout & logfile.
     def __init__(self, filename):
         self.console = sys.__stdout__
         self.log_file = open(filename, 'w', encoding='utf-8')

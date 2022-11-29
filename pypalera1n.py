@@ -478,7 +478,7 @@ class palera1n(object):
                 if not os.path.exists(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type), 'gaster')):
                     print('[*] Downloading gaster.....')
                     with zipfile.ZipFile(BytesIO(urllib.request.urlopen(urllib.request.Request('https://nightly.link/palera1n/gaster/workflows/makefile/main/gaster-{}.zip'.format(self.os_type), headers={'User-Agent': 'curl/7.85.0'})).read())) as gaster_zip:
-                        gaster_zip.extractall(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type))+'./')
+                        gaster_zip.extractall(os.path.join(self.default_path, 'ramdisk_{}'.format(self.os_type))+'/.')
                     print('[*] gaster Download Done!')
                 pass
             self.return_path = os.getcwd()

@@ -128,7 +128,10 @@ class palera1n(object):
             self.restorerootfs_option = '1'
         if self.args.clean:
             self.clean_option = '1'
-        self.main()
+        try:
+            self.main()
+        except:
+            self.exit_handler()
 
     def remote_command_sender(self, cmd):
         out, err = subprocess.Popen('{} -p "alpine" ssh -o StrictHostKeyChecking=no -p2222 root@localhost "{}"'.format(os.path.join(Dir, 'sshpass'), cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
